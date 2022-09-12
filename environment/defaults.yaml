@@ -1,0 +1,97 @@
+
+pipeline_account:
+  aws_region: ${secrets.pipeline.aws_region}
+  account_name: ${secrets.pipeline.account_name}
+  aws_account_id: ${secrets.pipeline.aws_account_id}
+  aws_profile: ${secrets.pipeline.aws_profile}
+  aws_access_key_id: ${secrets.pipeline.aws_access_key_id}
+  aws_secret_access_key: ${secrets.pipeline.aws_secret_access_key}
+  bucket_suffix: ${secrets.pipeline.bucket_suffix}
+  domain: ${secrets.pipeline.domain}
+  dns_hosted_zone: ${secrets.pipeline.dns_hosted_zone}
+  certificate: ${secrets.pipeline.certificate}
+
+target_account:
+  aws_region: ${secrets.target.aws_region}
+  account_name: ${secrets.target.account_name}
+  aws_account_id: ${secrets.target.aws_account_id}
+  aws_profile: ${secrets.target.aws_profile}
+  aws_access_key_id: ${secrets.target.aws_access_key_id}
+  aws_secret_access_key: ${secrets.target.aws_secret_access_key}
+  bucket_suffix: ${secrets.target.bucket_suffix}
+  domain: ${secrets.target.domain}
+  dns_hosted_zone: ${secrets.target.dns_hosted_zone}
+  certificate: ${secrets.target.certificate}
+  
+env: 
+  # PYTHON
+  PYTHONPATH: src
+  PYTHONTRACEMALLOC: 25
+
+  # INFRASTRUCTURE REPOSITORY
+  VCS_PROVIDER: github
+  REPO_TYPE: public
+
+  # VERSIONS
+  TERRAFORM_VERSION: 1.2.7
+  TERRAGRUNT_VERSION: 0.38.7
+
+  # TERRAGRUNT
+  RUN_ALL: true
+  BUCKET_SUFFIX: github
+  INTERACTIVE: false
+  FORCE_INIT: false
+  COMPACT_WARNINGS: true
+  COMPACT_STDOUT: false
+  LOG_LEVEL: info
+
+  # AWS
+  TARGET_AWS_SECRET: TARGET_AWS_ACCESS
+  PIPELINE_AWS_SECRET: PIPELINE_AWS_ACCESS
+
+  # PIPELINE
+  RUNNER_MACHINE: github-actions
+  WORK_FOLDER_NAME: temp-volume
+  INITIAL_PROGRESS: 10
+  MODULES_FINAL_PROGRESS: 90
+  FINAL_PROGRESS: 95
+  S3_JOBS_BUCKET: sf-pipeline-jobs
+  EVENTBRIDGE_RULE: SF-Cron-Pipeline
+  UPLOAD_WORKFOLDER: always
+  UPLOAD_JOB_RESOURCES: true
+  UPLOAD_PLAN_FILES: true
+  SEND_SQS_MESSAGES: true
+  SHOW_FILTERED_ERRORS: true
+  REPO_PIPELINE: sf-pipeline
+  ECHO_COMMANDS: false
+  POLL_INTERVAL: 5
+  MAX_SQS_MESSAGES: 10
+
+  # STEP FUNCTIONS
+  PIPELINE_STATE_MACHINE_NAME: Pipeline-State-Machine-enabling-drake
+  PIPELINE_SF_TEMPLATE_FILE: sf-template.json
+
+  # JOB
+  JOB_DEFINITION: arn:aws:batch:eu-west-1:377449198785:job-definition/tf_pipeline_job_definition
+  JOB_QUEUE: arn:aws:batch:eu-west-1:377449198785:job-queue/tf-deployment-job-queue
+
+  # ROLE
+  ROLE_EVENTBRIDGE: arn:aws:iam::377449198785:role/service-role/Amazon_EventBridge_Invoke_Batch_Job_Queue
+
+  # TTL
+  TTL_DURATION_MINUTES: 30
+
+  # AWS
+  AWS_PAGER:
+  AWS_RETRY_MODE: standard
+  AWS_MAX_ATTEMPTS: 5
+
+  # AWSF
+  AWSF_MAX_ATTEMPTS: 5
+  AWSF_BACKOFF_RATE: 3
+  AWSF_EXPONENTIAL_BACKOFF: true
+  AWSF_SILENT: true
+
+iam:
+  user: cicd
+

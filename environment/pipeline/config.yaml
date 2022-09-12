@@ -1,0 +1,42 @@
+# Configuration for Pipeline Environment
+
+# FILES
+file:
+  defaults: ../defaults.yaml
+
+# PROCESS SECRETS
+secrets:
+  pipeline: 
+    fetch_secret!: PIPELINE_AWS_ACCESS
+  target: 
+    fetch_secret!: PIPELINE_AWS_ACCESS
+
+# ACCOUNTS
+account:
+  pipeline:
+    import!: 
+      file: file.defaults
+      node: pipeline_account
+  target:
+    import!: 
+      file: file.defaults
+      node: target_account
+
+# WORKSPACE
+workspace:
+  workspace_id: pipeline
+  workspace_name: Pipeline Workspace
+
+# ENVIRONMENT VARIABLES
+env:
+  import!: # Read Default Values
+    file: file.defaults  
+    node: env
+  read_env_vars!: # Read Container environment overrides
+  write_env_vars!: # Write environment variables to shell environment
+
+# KUBERNETES
+k8s:
+  default:
+    cluster_name: k8s-cluster-pipeline
+
